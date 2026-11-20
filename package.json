@@ -1,6 +1,6 @@
 {
   "name": "magpie-zenmux-video",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Use ZenMux video models in Magpie Image with your existing ZenMux provider.",
   "type": "module",
   "main": "./index.mjs",

@@ -14,6 +14,14 @@ const veo = 'google/veo-3.1-generate-001';
 const video = Buffer.from('AAAAGGZ0eXBtcDQyAAAAAG1wNDJpc29t', 'base64');
 
 async function fixture(t) {
+  const fetchUpstream = globalThis.fetch;
+  t.mock.method(globalThis, 'fetch', (input, init) => {
+    const url = new URL(input instanceof Request ? input.url : input);
+    if (url.origin === 'https://zenmux.ai' && url.pathname === '/api/frontend/model/listByFilter') {
+      return Promise.resolve(Response.json({ success: true, data: [] }));
+    }
+    return fetchUpstream(input, init);
+  });
   const directory = await mkdtemp(join(tmpdir(), 'magpie-zenmux-video-test-'));
   const calls = [];
   const server = createServer(async (req, res) => {
