@@ -1,0 +1,20 @@
+{
+  "name": "magpie-zenmux-video",
+  "version": "0.1.0",
+  "description": "Use ZenMux video models in Magpie Image with your existing ZenMux provider.",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": "./index.mjs",
+  "files": ["index.mjs", "lib", "README.md", "LICENSE"],
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "keywords": ["magpie-plugin", "magpie", "zenmux", "video-generation"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/zghstart/magpie-zenmux-video.git" },
+  "magpie": {
+    "name": "ZenMux Video",
+    "summary": {
+      "zh": "用 Magpie 里已有的 ZenMux 供应商生成视频，支持文本、首帧图片及模型允许的参考素材。",
+      "en": "Generate videos through your existing ZenMux provider in Magpie Image."
+    }
+  }
+}
