@@ -33,14 +33,14 @@ function videoObject(id, model, state) {
 }
 
 export default async function ZenMuxVideo({ directory = process.cwd() } = {}) {
-  const catalog = createCatalog();
+  const catalog = createCatalog(directory);
   const jobs = omniJobs(directory);
   // A finished Vertex poll already contains the film. Keep one recent result for
   // the following /content GET; the upstream operation remains the durable source.
   let recentVertex;
   let expiry;
   const bind = async (source, signal) => createApi(await gatewayOrigin(directory), source, signal);
-  const models = async (source, signal) => catalog(source, await bind(source, signal));
+  const models = (source, signal, verify = false) => catalog(source, () => bind(source, signal), verify);
   const signedSource = (auth) => {
     if (auth?.type !== 'api' || !auth.key) throw problem(401, 'Connect an existing ZenMux provider in the ZenMux Video plugin');
     return sourceId(auth.key);
@@ -64,7 +64,7 @@ export default async function ZenMuxVideo({ directory = process.cwd() } = {}) {
         prompts: [{ type: 'text', key: 'source', message: 'Magpie provider ID / 供应商 ID（默认 zenmux）', placeholder: 'zenmux' }],
         async authorize(inputs = {}, { signal } = {}) {
           const source = sourceId(inputs.source);
-          const found = await models(source, signal);
+          const found = await models(source, signal, true);
           if (!found.size) throw new Error('The provider did not advertise any ZenMux video models');
           return { type: 'success', key: source, metadata: { email: source } };
         },
@@ -82,7 +82,7 @@ export default async function ZenMuxVideo({ directory = process.cwd() } = {}) {
               try { body = await req.json(); } catch { throw problem(400, 'A JSON video request is required'); }
               if (!validModel(body?.model)) throw problem(400, 'A ZenMux publisher/model ID is required');
               const model = body.model;
-              const protocol = (await catalog(source, api)).get(model)?.protocol;
+              const protocol = (await catalog(source, () => api)).get(model)?.protocol;
               if (!protocol) throw problem(400, 'This model is not in the ZenMux video catalog');
               let state;
               if (protocol === 'interactions') {

@@ -25,6 +25,8 @@ magpie tools generate_video
 
 插件从 `/api/v1/models` 和 `/api/vertex-ai/v1beta/models` 读取支持视频输出的模型。两个目录里重复的 Seedance 型号走原生视频接口。公开目录和接入协议见 [ZenMux 视频模型](https://zenmux.ai/models?output_modalities=video&sort=newest)。
 
+插件在 Magpie 数据目录的 `zenmux-video-catalog/` 中按供应商保存上次取得的模型目录。重启时，即使本机网关还在启动，Magpie 也能从缓存列出视频型号。网关就绪后，插件会在目录缓存过期时重新获取。
+
 | 协议 | 模型示例 | 任务与取片 |
 | --- | --- | --- |
 | ZenMux 原生视频 | Seedance、可灵、MiniMax H3、Wan、PixVerse、FLUX | 提交 `content[]`，按任务 ID 查询，然后流式下载 `content.video_url`。[接口文档](https://zenmux.ai/docs/zh/api/zenmux/generate-videos-native.html) |
